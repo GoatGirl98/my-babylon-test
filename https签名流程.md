@@ -11,20 +11,21 @@ req_extensions = v3_req
 
 [req_distinguished_name]
 countryName = Country Name (2 letter code)
-countryName_default = CH
+countryName_default = AU
 stateOrProvinceName = State or Province Name (full name)
-stateOrProvinceName_default = GD
+stateOrProvinceName_default = Some-State
 localityName = Locality Name (eg, city)
-localityName_default = ShenZhen
+# localityName_default = ShenZhen
 organizationalUnitName  = Organizational Unit Name (eg, section)
-organizationalUnitName_default  = organizationalUnitName
+organizationalUnitName_default  = Internet Widgits Pty Ltd
 commonName = Internet Widgits Ltd
 commonName_max  = 64
 
 [ v3_req ]
 # Extensions to add to a certificate request
-basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+authorityKeyIdentifier=keyid,issuer
+basicConstraints = CA:TRUE # Android 安装这里必须是True
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment, dataEncipherment
 subjectAltName = @alt_names
 
 [alt_names]
@@ -43,13 +44,23 @@ IP.2 = 10.81.40.105
 ### 2.命令行生成 `key` 和 `crt`
 
 ```
-openssl genrsa -out test_gpu_com.key 2048
+openssl genrsa -des3 -out ca.key 2048
+Enter PEM pass phrase: <your password>
+Verifying - Enter PEM pass phrase: <your password>
 
-openssl req -new -out test_gpu_com.csr -key test_gpu_com.key -config openssl.cnf
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 114514 -out ca.crt
 
-openssl req -text -noout -in test_gpu_com.csr
+openssl x509 -in ca.crt -noout -text
 
-openssl x509 -req -days 114514 -in test_gpu_com.csr -signkey test_gpu_com.key -out test_gpu_com.crt -extensions v3_req -extfile openssl.cnf
+openssl genrsa -out test_gpu_dev.key 2048
+
+openssl req -new -key test_gpu_dev.key -out test_gpu_dev.csr
+
+openssl req -text -noout -in test_gpu_dev.csr
+
+openssl x509 -req -in test_gpu_dev.csr -out test_gpu_dev.crt -days 114514 -CAcreateserial -CA ca.crt -CAkey ca.key -extensions v3_req -CAserial serial -extfile openssl.cnf
+
+openssl verify -CAfile ca.crt test_gpu_dev.crt
 ```
 
 ### 3.配置本地`webpack.config.js`
