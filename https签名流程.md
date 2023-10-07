@@ -67,13 +67,16 @@ openssl verify -CAfile ca.crt test_gpu_dev.crt
 
 ```javascript
 devServer: {
-      host: '0.0.0.0',
+      publicPath: "/dist",
+      host: "0.0.0.0",
       port: 443,
+      disableHostCheck:false,
+      allowedHosts : ['testgpu.dev', 'localhost'],
       https: {
         key : fs.readFileSync('./https/test_gpu_com.key'),
         cert: fs.readFileSync('./https/test_gpu_com.crt')
       },
-      allowedHosts : ['testgpu.com'], 
+      /*
       devMiddleware: {
         publicPath: "/dist/",
       },
@@ -81,6 +84,7 @@ devServer: {
         directory: "./",
         serveIndex: true,
       },
+      */
     },
 ```
 
