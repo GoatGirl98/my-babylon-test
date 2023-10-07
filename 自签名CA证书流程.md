@@ -169,7 +169,7 @@ An optional company name []:
 
 ```ini
 authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
+basicConstraints=CA:TRUE
 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 subjectAltName = @alt_names
 
@@ -178,6 +178,10 @@ DNS.1 = localhost
 IP.2 = 127.0.0.1
 DNS.3 = test.com
 DNS.4 = *.test.com
+# hot spot
+IP.5 = 192.168.XXX.X
+# LAN IP etc.
+IP.6 = XX.X.X.XXX
 ```
 
 当前目录的文件
@@ -253,7 +257,7 @@ Certificate:
                 keyid:BA:E4:FF:29:AA:F6:66:C7:FA:E8:B9:86:5E:45:41:40:2F:D2:69:BE
 
             X509v3 Basic Constraints:
-                CA:FALSE
+                CA:TRUE
             X509v3 Key Usage:
                 Digital Signature, Non Repudiation, Key Encipherment, Data Encipherment
             X509v3 Subject Alternative Name:
